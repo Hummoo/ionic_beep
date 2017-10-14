@@ -19,6 +19,10 @@ export class AuthProvider {
     console.log('Hello AuthProvider Provider');
   }
 
+  getAuthenticatedUser() {
+    return this.auth.authState;
+  }
+
   async createUserWithEmailAndPassword(account: Account) {
     try {
       return <LoginResponse>{
@@ -41,6 +45,10 @@ export class AuthProvider {
         error: e
       };
     }
+  }
+
+  signOut() {
+    this.auth.auth.signOut();
   }
 
 }

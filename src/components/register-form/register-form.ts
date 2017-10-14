@@ -1,7 +1,7 @@
-import { Component, Output } from '@angular/core';
-import { ToastController } from 'ionic-angular';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 import { Account } from '../../models/account/account.inteface';
+import { LoginResponse } from '../../models/login/login-response.interface';
 import { AuthProvider } from '../../providers/auth/auth';
 
 /**
@@ -18,26 +18,21 @@ export class RegisterFormComponent {
 
   account = {} as Account;
 
-  @Output() registerStatus;
+  @Output() registerStatus: EventEmitter<LoginResponse>;
 
-  constructor(private auth: AuthProvider, private toast: ToastController) {
+  constructor(private auth: AuthProvider) {
     console.log('Hello RegisterFormComponent Component');
+    this.registerStatus = new EventEmitter<LoginResponse>();
   }
 
   async register() {
     try {
       const result = await this.auth.createUserWithEmailAndPassword(this.account);
-      this.toast.create({
-        message: "Account is successfully created.",
-        duration: 3000
-      }).present();
       console.log(result);
+      this.registerStatus.emit(result);
     } catch (e) {
       console.error(e);
-      this.toast.create({
-        message: e.message,
-        duration: 3000
-      }).present();
+      this.registerStatus.emit(e);
     }
   }
 
